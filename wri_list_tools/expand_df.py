@@ -89,6 +89,35 @@ class ExpandedDataFrame(Mapping):
             df.to_csv(path)
         print("DONE!")
 
+    def to_gpkg(self, path: str, input_df):
+        def attribute_name(col):
+            if type(col) == tuple:
+                return ":".join(col)
+            else:
+                return col
+
+        def feature_id(index):
+            pairs = [f"{k}={v}" for k, v in zip(self.index_cols, index)]
+            return ":".join(pairs)
+
+        def join_for_gpkg(df):
+            join_df = input_df.join(df)
+            join_df.index = join_df.index.to_flat_index()
+            join_df = join_df.rename(index=feature_id, columns=attribute_name)
+            return join_df
+
+        for col in list(self.nested_cols):
+            print(col)
+            col_keys = list(reversed(self.nested_cols[col]))
+            df = self[col].reset_index().pivot(index=self.index_cols, columns=col_keys, values=col)
+            if (len(df) > 0):
+                # can't write empty dataframe
+                join_df = join_for_gpkg(df)
+                join_df.to_file(path, driver="GPKG", layer=col, index=True)
+
+        join_df = join_for_gpkg(self.attributes_df())
+        join_df.to_file(path, driver="GPKG", layer="attributes", index=True)
+
     @classmethod
     def read_csv(cls, path):
         if path[:5] == "s3://":
@@ -103,9 +132,9 @@ class ExpandedDataFrame(Mapping):
 
 
 class ForestChangeDiagnostic(ExpandedDataFrame):
-    """ForstChangeDiagnostic job output from https://github.com/wri/gfw_forest_loss_geotrellis"""
+    """ForestChangeDiagnostic job output from https://github.com/wri/gfw_forest_loss_geotrellis"""
 
-    index_cols = ["location_id"]
+    index_cols = ["list_id", "location_id"]
     nested_cols = {
         "tree_cover_loss_total_yearly": ["year"],
         "tree_cover_loss_primary_forest_yearly": ["year"],

@@ -190,6 +190,7 @@ Index(['index', 'list_id', 'status_code', 'location_error',
       dtype='object')
 ```
 
+## Export to CSV
 Flat views are suited to being imported into Excel for manual inspection:
 
 ```python
@@ -219,3 +220,19 @@ In [28]: fcd.to_csv_dir("/tmp/fcd-out")
 /tmp/fcd-out/commodity_threat_fires.csv
 DONE!
 ```
+
+## Export to GPKG
+
+For visual inspection the geometries from the input TSV can be combined with the result attributes to be saved to GPKG.
+Each nested column gets its own layer and the attributes are flattened to be readable in QGIS:
+
+```python
+In [1]: from wri_list_tools import ForestChangeDiagnostic, read_list_tsv
+
+In [2]: input_df = read_list_tsv("tests/palm-generic-32.tsv")
+
+In [3]: fcd = ForestChangeDiagnostic("tests/fcd_output")
+
+In [4]: fcd.to_gpkg("/tmp/fcd.gpkg", input_df)
+```
+![FCD GPKG Export](docs/img/fcd-gpkg-export.png)
