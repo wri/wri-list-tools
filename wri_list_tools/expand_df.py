@@ -113,7 +113,7 @@ class ForestChangeDiagnostic(ExpandedDataFrame):
         "tree_cover_loss_intact_forest_yearly": ["year"],
         "tree_cover_loss_protected_areas_yearly": ["year"],
         "tree_cover_loss_sea_landcover_yearly": ["landcover", "year"],
-        "tree_cover_loss_idn_landcover_yearly": ["landocver", "year"],
+        "tree_cover_loss_idn_landcover_yearly": ["landcover", "year"],
         "tree_cover_loss_soy_yearly": ["year"],
         "tree_cover_loss_idn_legal_yearly": ["legal", "year"],
         "tree_cover_loss_idn_forest_moratorium_yearly": ["year"],
