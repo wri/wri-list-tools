@@ -175,7 +175,7 @@ location_id landocver year
 Those attributes that don't need expanded are accessible as a simple table:
 
 ```python
-In [27]: fcd.attributes_df().columns
+In [27]: fcd.attributes_df.columns
 Out[27]:
 Index(['index', 'list_id', 'status_code', 'location_error',
        'tree_cover_extent_total', 'tree_cover_extent_primary_forest',

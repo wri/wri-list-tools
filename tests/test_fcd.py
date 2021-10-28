@@ -36,4 +36,4 @@ class TestListUtils(unittest.TestCase):
             self.fcd.to_gpkg(outfile_path, input_df)
 
             attributes_df = gpd.read_file(outfile_path, driver="GPKG", layer="attributes")
-            self.assertEqual(len(attributes_df), len(self.fcd.attributes_df()))
+            self.assertEqual(len(attributes_df), len(self.fcd.attributes_df))

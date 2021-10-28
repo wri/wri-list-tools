@@ -48,9 +48,17 @@ class ExpandedDataFrame(Mapping):
         index_cols = index_cols or self.index_cols
         df = df.reset_index().set_index(index_cols)
 
-        self.df = df
         # cache for previously resolved columns
         self._resolved_col_df = {}
+        self.df = df
+        self.attributes_df = df.drop(self.nested_cols, axis=1).sort_index()
+
+    def __eq__(self, other):
+        return (
+            self.__class__ == other.__class__ and
+            self.attributes_df.equals(other.attributes_df) and
+            all([self[col].equals(other[col]) for col in self.nested_cols])
+        )
 
     def __len__(self):
         return len(self.df.columns)
@@ -70,17 +78,12 @@ class ExpandedDataFrame(Mapping):
         else:
             raise KeyError(name)
 
-    def attributes_df(self):
-        """DataFrame of non-nested attributes that don't need to be expanded"""
-        return self.df.drop(self.nested_cols, axis=1).sort_index()
-
     def to_csv_dir(self, dir_name: str):
         """Save all expanded dataframes as CSV files"""
         if not os.path.exists(dir_name):
             os.makedirs(dir_name)
         nested_cols = list(self.nested_cols)
-        attributes_df = self.df.drop(nested_cols, axis=1).sort_index()
-        attributes_df.to_csv(os.path.join(dir_name, "attributes.csv"))
+        self.attributes_df.to_csv(os.path.join(dir_name, "attributes.csv"))
 
         for name in nested_cols:
             path = os.path.join(dir_name, name + ".csv")
@@ -115,7 +118,7 @@ class ExpandedDataFrame(Mapping):
                 join_df = join_for_gpkg(df)
                 join_df.to_file(path, driver="GPKG", layer=col, index=True)
 
-        join_df = join_for_gpkg(self.attributes_df())
+        join_df = join_for_gpkg(self.attributes_df)
         join_df.to_file(path, driver="GPKG", layer="attributes", index=True)
 
     @classmethod
