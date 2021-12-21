@@ -1,3 +1,4 @@
+from geopandas.geodataframe import GeoDataFrame
 import pandas as pd
 import json
 import os
@@ -57,7 +58,7 @@ class ExpandedDataFrame(Mapping):
         return (
             self.__class__ == other.__class__ and
             self.attributes_df.equals(other.attributes_df) and
-            all([self[col].equals(other[col]) for col in self.nested_cols])
+            all([self[col].sort_index().equals(other[col].sort_index()) for col in self.nested_cols])
         )
 
     def __len__(self):
