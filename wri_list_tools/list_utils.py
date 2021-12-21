@@ -10,7 +10,7 @@ def read_list_tsv(path: str) -> GeoDataFrame:
     """Read input TSV file into GeoDataFrame
     Reads the WKB from the 'geom' column into 'geometry' column.
     """
-    df = pd.read_csv(path, sep="\t", index_col="location_id")
+    df = pd.read_csv(path, sep="\t", index_col=["list_id", "location_id"])
     gdf = GeoDataFrame(df, geometry=df["geom"].apply(wkb.loads, hex=True), crs=4326)
     return gdf.drop("geom", axis=1)
 
