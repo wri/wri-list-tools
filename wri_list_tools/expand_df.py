@@ -46,7 +46,7 @@ class ExpandedDataFrame(Mapping):
         )
         # reset the DataFrame index to what we expect
         index_cols = index_cols or self.index_cols
-        df = df.reset_index().set_index(index_cols)
+        df = df.set_index(index_cols)
 
         # cache for previously resolved columns
         self._resolved_col_df = {}
