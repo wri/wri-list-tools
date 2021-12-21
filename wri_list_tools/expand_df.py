@@ -92,7 +92,8 @@ class ExpandedDataFrame(Mapping):
             df.to_csv(path)
         print("DONE!")
 
-    def to_gpkg(self, path: str, input_df):
+    def to_gpkg(self, path: str, input_df: GeoDataFrame):
+        assert isinstance(input_df, GeoDataFrame), f"{input_df} is not GeoDataFrame"
         def attribute_name(col):
             if type(col) == tuple:
                 return ":".join(col)
