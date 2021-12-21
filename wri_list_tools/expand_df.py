@@ -169,9 +169,10 @@ class ForestChangeDiagnostic(ExpandedDataFrame):
 class Dashboard(ExpandedDataFrame):
     """Dashboard job output from https://github.com/wri/gfw_forest_loss_geotrellis"""
 
-    index_cols = ["location_id", "gadm_id"]
+    index_cols = ["list_id", "location_id", "gadm_id"]
     nested_cols = {
         "glad_alerts_daily": ["date"],
         "glad_alerts_weekly": ["week"],
         "glad_alerts_monthly": ["month"],
+        "viirs_alerts_daily": ["date"]
     }
